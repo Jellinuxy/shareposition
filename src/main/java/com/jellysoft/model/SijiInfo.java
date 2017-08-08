@@ -8,6 +8,11 @@ import javax.persistence.Table;
 @Table(name="siji_info")
 public class SijiInfo {
 
+	
+	public static final int MALE = 1;//男
+	
+	public static final int FEMALE = 2;//女
+	
 	@Id
 	public int sid;
 	

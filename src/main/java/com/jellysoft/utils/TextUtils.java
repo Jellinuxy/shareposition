@@ -8,6 +8,7 @@ public class TextUtils {
 
 	/**
 	 * 获取MD5
+	 * 
 	 * @param message
 	 * @return MD5加密后的字符串
 	 */
@@ -31,24 +32,44 @@ public class TextUtils {
 		}
 		return md5str.toLowerCase();
 	}
-	
-	
+
+	/**
+	 * 判断是否是手机号码
+	 * @param phone 
+	 * @return
+	 */
+	public static boolean isPhoneNumber(String phone) {
+		if (phone == null)
+			return false;
+
+		if (phone.length() != 11)
+			return false;
+		boolean isNumber = false;
+		try {
+			long phoneNumber = Long.parseLong(phone);
+			isNumber = true;
+		} catch (NumberFormatException e) {
+
+		}
+		return isNumber;
+	}
+
 	/**
 	 * 判断是否有空数据
+	 * 
 	 * @param params
 	 * @return
 	 */
-	public static boolean isNullOrEmpty(String ...params){
-		
-		for( int i = 0 ; i < params.length ; i++ ){
-			if( StringUtils.isNullOrEmpty( params[i] ) ){
+	public static boolean isNullOrEmpty(String... params) {
+
+		for (int i = 0; i < params.length; i++) {
+			if (StringUtils.isNullOrEmpty(params[i])) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
 
 	private static String bytesToHex(byte[] bytes) {
 		StringBuffer md5str = new StringBuffer();

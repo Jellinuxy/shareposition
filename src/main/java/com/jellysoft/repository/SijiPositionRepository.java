@@ -18,4 +18,6 @@ public interface SijiPositionRepository extends CrudRepository<SijiPosition ,Int
 	
 	List<SijiPosition> findFirstBySidIn( Iterable<Integer> ids  );
 	
+	
+	
 }

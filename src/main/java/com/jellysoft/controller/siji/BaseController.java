@@ -1,4 +1,4 @@
-package com.jellysoft.controller;
+package com.jellysoft.controller.siji;
 
 import java.util.Map;
 
@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jellysoft.model.Siji;
 import com.jellysoft.utils.TextUtils;
 
 /**
@@ -22,14 +23,20 @@ public class BaseController {
 	
 	
 	public enum BackType {
+		
 		SUCCESS("成功"),
 		TOKEN_ERROR("token错误，请重新登录"),
 		LOGIN_EMPTY("账号或者密码未输入请重试。"),
 		LOGIN_ERROR("账号或者密码错误，请重试。"), 
 		LOGIN_LOCKED("您的账号已被锁定，请联系管理员申诉解锁。"),
 		REGISTER_EMPTY( "注册信息不全，请重试。" ),
-		REGISTER_USER_EXIST("电话号码已经使用，请重试"),
-		PUSH_TASK_EMPTY( "您提交的任务信息不全，请重试" )
+		REGISTER_SEX_ERROR( "注册性别有错误，请重试。" ),
+		REGISTER_PHONE_ERROR( "电话号码有误，请重试。" ),
+		REGISTER_USER_EXIST("账号已经使用，请重试。"),
+		REGISTER_PHONE_EXIST("电话号码已经注册，请重试。"),
+		REGISTER_ID_EXIST("身份证号码已经注册，请重试。"),
+		REGISTER_CARNUMBER_EXIST("车牌已经注册，请重试。"),
+		REGISTER_ERROR("注册失败，请核对信息后重试。")
 		
 		
 
@@ -71,22 +78,22 @@ public class BaseController {
 	 *            用户秘钥
 	 * @return
 	 */
-	protected boolean checkToken(String phone, String uid, String token) {
+	protected boolean checkToken(String account, String sid, String token) {
 
-		if (TextUtils.isNullOrEmpty( phone , uid , token ))
+		if (TextUtils.isNullOrEmpty( account , sid , token ))
 			return false;
 
-//		// 获取到key  TODO
-//		String key = User.getTokenKey(phone, uid);
-//
-//		// 获取token
-//		ValueOperations<String, String> redis = redisTemplate.opsForValue();
-//		String serverToken = redis.get(key);
-//		
-//
-//		if (!token.equals(serverToken)) {
-//			return false;
-//		}
+		// 获取到key  TODO
+		String key = Siji.getTokenKey(account, sid);
+
+		// 获取token
+		ValueOperations<String, String> redis = redisTemplate.opsForValue();
+		String serverToken = redis.get(key);
+		
+
+		if (!token.equals(serverToken)) {
+			return false;
+		}
 
 		return true;
 	}
@@ -100,41 +107,40 @@ public class BaseController {
 	 */
 	protected boolean checkToken(){
 		
-		String phone = request.getHeader( "phone" );
-		String uid = request.getHeader( "uid" );
+		String account = request.getHeader( "account" );
+		String sid = request.getHeader( "sid" );
 		String token = request.getHeader( "token" );
 		
-		return checkToken( phone , uid , token );
+		return checkToken( account , sid , token );
 		
 	}
 	
 	
 	/**
-	 * 获得用户uid
+	 * 获得用户sid
 	 * @return
 	 */
-	protected String getUid(){
-		return request.getHeader( "uid" );
+	protected String getSid(){
+		return request.getHeader( "sid" );
 	}
 	
 
-//	/** TODO
-//	 * 用户保存token
-//	 * @param user 用户
-//	 * @return
-//	 */
-//	protected String saveToken(User user) {
-//		// 处理用户Token 保存redis然后返回给用户 key应该是用户的phone以及uid
-//		String tokenKey = user.getTokenKey();
-//		String token = user.createToken();
-//
-//		// TODO此处需要获取用户的信息 专门调一个接口，当用户在首页的时候 去获取用户信息
-//
-//		// 保存到redis
-//		ValueOperations<String, String> redis = redisTemplate.opsForValue();
-//		redis.set(tokenKey, token);
-//		return token;
-//	}
+	/** TODO
+	 * 用户保存token
+	 * @param user 用户
+	 * @return
+	 */
+	protected String saveToken(Siji user) {
+		// 处理用户Token 保存redis然后返回给用户 key应该是用户的phone以及uid
+		String tokenKey = user.getTokenKey();
+		String token = user.createToken();
+
+
+		// 保存到redis
+		ValueOperations<String, String> redis = redisTemplate.opsForValue();
+		redis.set(tokenKey, token);
+		return token;
+	}
 
 	protected String backData(BackType backType, Map<String, Object> data) {
 

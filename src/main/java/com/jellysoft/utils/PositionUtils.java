@@ -1,16 +1,13 @@
 package com.jellysoft.utils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 
-import com.alibaba.fastjson.JSONObject;
 import com.jellysoft.model.SijiPosition;
 
 import ch.hsr.geohash.GeoHash;
@@ -19,21 +16,13 @@ public class PositionUtils {
 	
 	public static final String LATLNG_PRE = "latlng_";
 	public static final String GEO_PRE = "GEO_";
-	
-	
-	
+	public static final String GEO_SET_PRE = "GEO_SET_";
+
 	public static void saveUserPosition( int uid , String latlngInfo , ValueOperations< String , String > kv ){
 		String key = LATLNG_PRE + uid;
 		kv.set( key , latlngInfo );
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
 	private static void setUserGeo( String uid, String geo , ValueOperations< String , String > kv ){
 		
 		kv.set( uid  ,  geo);
